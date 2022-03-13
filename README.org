@@ -1,0 +1,19 @@
+#+title: cassandra_playbooks
+* cassandra_playbooks
+Ansible playbooks for creating and managing a cassandra cluster
+** Usage
+Create secrets file for kestore password with a ~.enc~ suffix in ~./vault/~. For this example, we'll use ~./vault/secrets.enc~
+#+begin_src yaml
+---
+keystor_pass: someSecret
+#+end_src
+Then run
+#+begin_src shell
+ansible-vault encrypt ./vault/secrets.enc
+#+end_src
+You'll be prompted for a password. Give it a secure password, and
+store the password in a file on your system.
+Then run
+#+begin_src shell
+ansible-playbook -e @vault/secrets.enc --vault-password-file <path_to_password_file> newcerts.yml
+#+end_src
