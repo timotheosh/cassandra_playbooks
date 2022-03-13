@@ -1,7 +1,7 @@
 # -*- mode: Yaml; eval: (ansible 1) -*-
 ---
-cert_dir: /root/certificates/roles/deploy-certificates/files
-keystore_pass: Lanka4-Battering4-Knight7-Thine-Dollop-3Annum-spectator1-Angle3
+cert_dir: /root/cassandra_playbooks/roles/deploy-certificates/files
+keystore_pass: "{{ keystore_pass }}"
 password_file: /etc/ssl/private/password.txt
 provisioner: cassandra@selfdidactic.lan
 root_ca: /root/.step/certs/root_ca.crt
