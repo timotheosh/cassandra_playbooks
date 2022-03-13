@@ -1,0 +1,14 @@
+# -*- mode: Yaml; eval: (ansible 1) -*-
+---
+- hosts: localhost
+  become: yes
+  roles:
+    - { role: cleanup,             tags: cleanup }
+    - { role: create-certificates, tags: create-certificates }
+
+- hosts: cassandra
+  become: yes
+  roles:
+    - { role: configure-cassandra, tags: configure-cassandra }
+    - { role: deploy-certificates, tags: deploy-certificates }
+    

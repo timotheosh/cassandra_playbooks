@@ -1,0 +1,7 @@
+# -*- mode: Yaml; eval: (ansible 1) -*-
+---
+- hosts: cassandra
+  become: yes
+  roles:
+    - { role: restart-cassandra,   tags: restart-cassandra }
+    

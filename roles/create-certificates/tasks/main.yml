@@ -1,0 +1,49 @@
+# -*- mode: Yaml; eval: (ansible 1) -*-
+---
+- name: Create server truststore
+  command:
+    cmd: "keytool -keystore {{ cert_dir }}/truststore.jks -alias CARoot -importcert -file {{ root_ca }} -keypass {{ keystore_pass }} -storepass {{ keystore_pass }} -noprompt"
+    creates: "{{ cert_dir }}/truststore.jks"
+
+- name: Create new keystore files
+  command:
+    cmd: "keytool -genkeypair -keyalg RSA -alias {{ item.name }} -keystore {{ cert_dir }}/{{ item.name }}-keystore.jks -storepass {{ keystore_pass }} -keypass {{ keystore_pass }} -validity 3 -keysize 2048 -dname 'CN={{ item.fqdn }}, OU=cassandra-cluster, O=selfdidactic.lan, C=US'"
+    creates: "{{ cert_dir }}/{{ item.name }}-keystore.jks"
+  with_items:
+    - { name: "cassandra1", fqdn: "cassandra1.selfdidactic.lan" }
+    - { name: "cassandra2", fqdn: "cassandra2.selfdidactic.lan" }
+    - { name: "cassandra3", fqdn: "cassandra3.selfdidactic.lan" }
+
+- name: Create certificate signing requests from keystore
+  command:
+    cmd: "keytool -keystore {{ cert_dir }}/{{ item.name }}-keystore.jks -alias {{ item.name }} -certreq -file {{ cert_dir }}/{{ item.name }}.csr -keypass {{ keystore_pass }} -storepass {{ keystore_pass }}"
+    creates: "{{ cert_dir }}/{{ item.name }}.csr"
+  with_items:
+    - { name: "cassandra1" }
+    - { name: "cassandra2" }
+    - { name: "cassandra3" }
+
+- name: Sign certificate signing request with step-ca
+  command:
+    cmd: "step ca sign --not-after=24h5m --provisioner {{ provisioner }} --provisioner-password-file={{ password_file }} {{ cert_dir }}/{{ item.name }}.csr {{ cert_dir }}/{{ item.name }}.crt"
+    creates: "{{ cert_dir }}/{{ item.name }}.crt"
+  with_items:
+    - { name: "cassandra1" }
+    - { name: "cassandra2" }
+    - { name: "cassandra3" }
+
+- name: Import root_ca into keystore
+  command:
+    cmd: "keytool -keystore {{ cert_dir }}/{{ item.name }}-keystore.jks -alias CARoot -import -file {{ root_ca }} -noprompt -keypass {{ keystore_pass }} -storepass {{ keystore_pass }}"
+  with_items:
+    - { name: "cassandra1" }
+    - { name: "cassandra2" }
+    - { name: "cassandra3" }
+
+- name: Add signed certs back into keystore
+  command:
+    cmd: "keytool -keystore {{ cert_dir }}/{{ item.name }}-keystore.jks -alias {{ item.name }} -import -file {{ cert_dir }}/{{ item.name }}.crt -keypass {{ keystore_pass }} -storepass {{ keystore_pass }}"
+  with_items:
+    - { name: "cassandra1" }
+    - { name: "cassandra2" }
+    - { name: "cassandra3" }

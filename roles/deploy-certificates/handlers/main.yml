@@ -1,0 +1,6 @@
+# -*- mode: Yaml; eval: (ansible 1) -*-
+---
+- name: Reload SSL certs cassandra
+  command: nodetool reloadssl
+
+    

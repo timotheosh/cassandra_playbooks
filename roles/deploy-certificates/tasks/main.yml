@@ -1,0 +1,17 @@
+# -*- mode: Yaml; eval: (ansible 1) -*-
+---
+- name: Install truststore
+  copy:
+    src: truststore.jks
+    dest: /etc/cassandra/.truststore
+    mode: 0444
+    backup: yes
+  notify: Reload SSL certs cassandra
+
+- name: Install keystore
+  copy:
+    src: "{{ ansible_host }}-keystore.jks"
+    dest: /etc/cassandra/.keystore.jks
+    mode: 0444
+    backup: yes
+  notify: Reload SSL certs cassandra

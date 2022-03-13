@@ -1,0 +1,5 @@
+# -*- mode: Yaml; eval: (ansible 1) -*-
+---
+- name: Clean up from previous run
+  shell: "rm -f {{ cert_dir }}/cassandra*"
+  

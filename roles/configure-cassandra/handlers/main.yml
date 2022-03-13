@@ -1,0 +1,7 @@
+# -*- mode: Yaml; eval: (ansible 1) -*-
+---
+- name: Restart Cassandra
+  systemd:
+    name: cassandra
+    state: restarted
+    enabled: yes
