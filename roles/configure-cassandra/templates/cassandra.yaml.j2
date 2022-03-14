@@ -1160,28 +1160,28 @@ server_encryption_options:
 # auth set require_client_auth=true. Restart all nodes
 client_encryption_options:
     # Enable client-to-server encryption
-    enabled: false
+    enabled: true
     # When set to true, encrypted and unencrypted connections are allowed on the native_transport_port
     # This should _only be true_ while in unencrypted or transitional operation
     # optional defaults to true when enabled is false, and false when enabled is true.
-    # optional: true
+    optional: false
     # Set keystore and keystore_password to valid keystores if enabled is true
-    keystore: conf/.keystore
-    keystore_password: cassandra
+    keystore: /etc/cassandra/.keystore.jks
+    keystore_password: {{ keystore_pass }}
     # Verify client certificates
-    require_client_auth: false
+    require_client_auth: true
     # Set trustore and truststore_password if require_client_auth is true
-    # truststore: conf/.truststore
-    # truststore_password: cassandra
+    truststore: /etc/cassandra/.truststore
+    truststore_password: {{ keystore_pass }}
     # More advanced defaults:
-    # protocol: TLS
-    # store_type: JKS
-    # cipher_suites: [
-    #   TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384, TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
-    #   TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256, TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
-    #   TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA, TLS_RSA_WITH_AES_128_GCM_SHA256, TLS_RSA_WITH_AES_128_CBC_SHA,
-    #   TLS_RSA_WITH_AES_256_CBC_SHA
-    # ]
+    protocol: TLS
+    store_type: JKS
+    cipher_suites: [
+      TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384, TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+      TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256, TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
+      TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA, TLS_RSA_WITH_AES_128_GCM_SHA256, TLS_RSA_WITH_AES_128_CBC_SHA,
+      TLS_RSA_WITH_AES_256_CBC_SHA
+    ]
 
 # internode_compression controls whether traffic between nodes is
 # compressed.
